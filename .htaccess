@@ -1,0 +1,36 @@
+AddDefaultCharset UTF-8
+DirectoryIndex index.php
+Options -Indexes
+
+# 内部ファイルへの直接アクセス禁止
+<FilesMatch "^(config|db|auth|security)\.php$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# 隠しファイルへのアクセス禁止
+<FilesMatch "^\.(ht|git)">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# SSEのgzip無効化
+<IfModule mod_deflate.c>
+    SetEnvIf Request_URI "api/chat\.php" no-gzip
+</IfModule>
+
+# URLからPHPを除去
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /tabi/
+
+    # すでに .php があるリクエストはそのまま処理
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # /tabi/login → /tabi/login.php
+    RewriteRule ^login$ login.php [L]
+
+    # /tabi/ または /tabi → index.php
+    RewriteRule ^$ index.php [L]
+</IfModule>
