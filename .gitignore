@@ -1,0 +1,4 @@
+config.php
+sessions/
+!sessions/.htaccess
+*.log
